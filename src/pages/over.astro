@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../data/site';
+---
+<Base
+  title="Over CoPortaal — gemaakt door een administratiekantoor"
+  description="CoPortaal is ontstaan op de werkvloer van een Nederlands administratie- en belastingadvieskantoor. Elke functie is er omdat we hem zelf nodig hadden."
+  pad="/over"
+>
+  <section class="container-x max-w-3xl py-16 prose-nl">
+    <p class="eyebrow">Over CoPortaal</p>
+    <h1 class="mt-3 text-4xl font-bold tracking-tight text-navy-900">Gemaakt op de werkvloer, niet in een vergaderzaal</h1>
+    <p class="mt-6 text-lg">CoPortaal begon als het eigen portaal van een administratie- en belastingadvieskantoor in Nederland. Met honderden klanten, loonadministraties voor tientallen werkgevers en elk jaar dezelfde piek rond de aangiften, liep het kantoor tegen hetzelfde aan als ieder kantoor: de informatie stond overal, behalve op één plek.</p>
+    <p class="mt-4">Dus bouwden we het zelf. Eerst de klantenkaart en de workflow, daarna de taken en het team. Toen de Wwft-identificatie, omdat kopieën van paspoorten in mappen niet meer van deze tijd zijn. Toen de facturatie met incasso, omdat nabellen zonde van de tijd is. Elke functie is er omdat iemand op kantoor hem op een dinsdagmiddag nodig had.</p>
+    <p class="mt-4">Dat portaal is nu beschikbaar voor andere kantoren, onder de naam CoPortaal. Elk kantoor krijgt een eigen omgeving: uw gegevens staan nooit in dezelfde database als die van een ander kantoor. En omdat wij er zelf elke dag mee werken, merkt u verbeteringen direct.</p>
+
+    <h2 class="mt-12 text-2xl font-semibold text-navy-900">Waar u op kunt rekenen</h2>
+    <ul class="mt-4 space-y-3 text-ink-600">
+      <li><strong class="text-navy-800">Eigen omgeving in de EU.</strong> Dagelijkse back-ups en herstel tot op de minuut.</li>
+      <li><strong class="text-navy-800">AVG en Wwft als uitgangspunt.</strong> BSN's worden afgeschermd, originelen worden na controle verwijderd, en elke stap wordt vastgelegd. Een verwerkersovereenkomst hoort bij elk abonnement.</li>
+      <li><strong class="text-navy-800">Nederlands, van de praktijk.</strong> Geen vertaalde software. Termen, termijnen en brieven kloppen met hoe het in Nederland werkt.</li>
+      <li><strong class="text-navy-800">Geen vendor lock-in.</strong> Uw gegevens zijn altijd te exporteren. Opzeggen kan per maand.</li>
+    </ul>
+
+    <div class="mt-12 rounded-2xl bg-navy-50 p-6">
+      <p class="font-semibold text-navy-800">Vragen?</p>
+      <p class="mt-1 text-sm text-ink-600">Mail naar <a class="underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>. U krijgt antwoord van iemand die het portaal zelf gebruikt.</p>
+    </div>
+  </section>
+</Base>

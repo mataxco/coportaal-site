@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import { ALL, BASIS, INRICHTING, MODULES } from '../data/site';
+const config = { basis: BASIS.prijs, incl: BASIS.gebruikersInbegrepen, extra: BASIS.prijsPerExtraGebruiker, all: ALL.prijs, modules: Object.fromEntries(MODULES.map(m => [m.slug, m.prijs])) };
+---
+<Base
+  title="Prijzen — stel uw abonnement samen — CoPortaal"
+  description="Basis vanaf € 79 per maand, modules KYC, Facturatie en Loon per maand bij te kopen, of alles in CoPortaal ALL. Per kantoor, maandelijks opzegbaar, exclusief btw."
+  pad="/prijzen"
+>
+  <section class="container-x py-16">
+    <p class="eyebrow">Prijzen</p>
+    <h1 class="mt-3 text-4xl font-bold tracking-tight text-navy-900">Stel uw abonnement samen</h1>
+    <p class="mt-4 max-w-2xl text-ink-600">Eén prijs per kantoor per maand. Kies de basis, zet modules aan en geef op met hoeveel mensen u werkt. Alles exclusief btw, maandelijks opzegbaar.</p>
+
+    <div class="mt-10 grid gap-8 lg:grid-cols-[3fr_2fr]" id="configurator">
+      <div class="space-y-8">
+        <div>
+          <p class="text-sm font-semibold text-ink-400">Stap 1 · Basis</p>
+          <div class="mt-3 flex items-center justify-between rounded-2xl border-2 border-navy-600 bg-white p-5">
+            <div>
+              <p class="font-semibold text-navy-800">{BASIS.naam}</p>
+              <p class="text-sm text-ink-600">Klanten, workflow, taken, team, kennisbank, documenten, ondertekenen · {BASIS.gebruikersInbegrepen} gebruikers inbegrepen</p>
+            </div>
+            <p class="whitespace-nowrap text-lg font-semibold text-navy-800">€ {BASIS.prijs}<span class="text-xs text-ink-400"> /mnd</span></p>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-sm font-semibold text-ink-400">Stap 2 · Modules</p>
+          <div class="mt-3 grid gap-3">
+            {MODULES.map(m => (
+              <label class="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-navy-100 bg-white p-5 has-[:checked]:border-navy-600 has-[:checked]:bg-navy-50/60">
+                <span class="flex items-start gap-3">
+                  <input type="checkbox" class="mod mt-1 h-4 w-4 accent-navy-800" data-slug={m.slug} />
+                  <span>
+                    <span class="font-semibold text-navy-800">{m.naam}</span>
+                    <span class="block text-sm text-ink-600">{m.kop}</span>
+                  </span>
+                </span>
+                <span class="whitespace-nowrap font-semibold text-navy-800">+ € {m.prijs}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="text-sm font-semibold text-ink-400">Stap 3 · Gebruikers</p>
+          <div class="mt-3 flex items-center gap-4 rounded-2xl border border-navy-100 bg-white p-5">
+            <input type="range" id="gebr" min={BASIS.gebruikersInbegrepen} max="25" value={BASIS.gebruikersInbegrepen} class="flex-1 accent-navy-800" />
+            <span id="gebr-out" class="min-w-[12rem] text-sm font-medium text-navy-800"></span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card sticky top-24 h-max bg-navy-50/60">
+        <p class="text-sm font-semibold text-ink-400">Uw abonnement</p>
+        <p class="mt-1 text-4xl font-bold text-navy-900" id="totaal"></p>
+        <p class="text-sm text-ink-600">per maand, exclusief btw · maandelijks opzegbaar</p>
+        <p class="mt-3 hidden rounded-lg bg-teal-100 px-3 py-2 text-sm text-teal-600" id="all-tip"></p>
+        <div class="mt-5 border-t border-navy-100 pt-4 text-sm text-ink-600">
+          <p><strong class="text-navy-800">Eenmalig € {INRICHTING.prijs}</strong> — {INRICHTING.omschrijving}</p>
+        </div>
+        <a href="/aanvraag" id="aanvraag-link" class="btn-primary mt-6 w-full">Aanvraag doen</a>
+        <p class="mt-3 text-xs text-ink-400">Binnen één werkdag staat uw omgeving klaar. Geen betaalgegevens nodig voor de aanvraag.</p>
+      </aside>
+    </div>
+
+    <div class="mt-16 grid gap-6 md:grid-cols-3">
+      {[
+        ['Alles inbegrepen', 'Hosting in de EU, dagelijkse back-ups, updates, e-mailverkeer vanuit het portaal en support per e-mail.'],
+        ['Geen gebruikerslimiet op lezen', 'Een collega die alleen hoeft mee te kijken telt niet als gebruiker. U betaalt voor wie werkt in het portaal.'],
+        ['Zelf uitbreiden', 'Een module bijbestellen? Eén mail en hij staat dezelfde dag aan. Afbouwen kan per maand.'],
+      ].map(([k, t]) => <div class="card"><h3 class="font-semibold text-navy-800">{k}</h3><p class="mt-2 text-sm text-ink-600">{t}</p></div>)}
+    </div>
+  </section>
+
+  <script define:vars={{ config }}>
+    const mods = [...document.querySelectorAll('.mod')];
+    const gebr = document.getElementById('gebr');
+    const uit = document.getElementById('gebr-out');
+    const tot = document.getElementById('totaal');
+    const tip = document.getElementById('all-tip');
+    const link = document.getElementById('aanvraag-link');
+    // Keuze uit de URL (bv. vanaf een modulepagina): ?m=kyc,facturatie
+    const vooraf = new URLSearchParams(location.search).get('m');
+    if (vooraf) mods.forEach(c => { c.checked = vooraf.split(',').includes(c.dataset.slug); });
+    function herbereken() {
+      const g = Number(gebr.value);
+      const extra = Math.max(0, g - config.incl);
+      const gekozen = mods.filter(c => c.checked).map(c => c.dataset.slug);
+      const los = config.basis + gekozen.reduce((s, k) => s + config.modules[k], 0);
+      const alle = gekozen.length === mods.length;
+      const pakket = alle ? Math.min(los, config.all) : los;
+      const totaal = pakket + extra * config.extra;
+      uit.textContent = g + ' gebruikers' + (extra ? ' (+' + extra + ' × € ' + config.extra + ')' : ' (inbegrepen)');
+      tot.textContent = '€ ' + totaal;
+      const toonTip = alle && config.all < los;
+      tip.classList.toggle('hidden', !toonTip);
+      tip.textContent = toonTip ? 'U krijgt CoPortaal ALL: alle modules voor € ' + config.all + ' per maand (u bespaart € ' + (los - config.all) + ').' : '';
+      link.href = '/aanvraag?m=' + gekozen.join(',') + '&g=' + g;
+    }
+    mods.forEach(c => c.addEventListener('change', herbereken));
+    gebr.addEventListener('input', herbereken);
+    herbereken();
+  </script>
+</Base>

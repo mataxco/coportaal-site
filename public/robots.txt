@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://coportaal.nl/sitemap-index.xml

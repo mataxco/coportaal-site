@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import { MODULES, SITE } from '../data/site';
+---
+<Base
+  title="Demo — bekijk CoPortaal in actie"
+  description="Bekijk in korte video's hoe CoPortaal werkt: klanten, workflow, taken, KYC, facturatie en loon. Of vraag een inlog op het demokantoor aan en klik zelf rond."
+  pad="/demo"
+>
+  <section class="container-x py-16">
+    <p class="eyebrow">Demo</p>
+    <h1 class="mt-3 text-4xl font-bold tracking-tight text-navy-900">Kijk hoe het werkt</h1>
+    <p class="mt-4 max-w-2xl text-ink-600">Korte video's per onderdeel, opgenomen op ons demokantoor met verzonnen gegevens. Wilt u zelf klikken? Vraag een inlog aan; u krijgt dezelfde dag toegang tot het demokantoor.</p>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-2">
+      {[['Overzicht', 'CoPortaal in 90 seconden'], ['Basis', 'Klanten, workflow en taken'], ...MODULES.map(m => [m.naam, m.kop])].map(([k, t]) => (
+        <div class="card p-3">
+          <div class="flex aspect-video items-center justify-center rounded-xl bg-navy-900 text-navy-100">
+            <div class="text-center">
+              <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gold-500 text-navy-950">▶</div>
+              <p class="mt-3 text-sm">Video volgt: {k}</p>
+            </div>
+          </div>
+          <p class="mt-3 px-2 font-semibold text-navy-800">{k}</p>
+          <p class="px-2 pb-2 text-sm text-ink-600">{t}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-12 rounded-3xl bg-navy-50 p-8 md:flex md:items-center md:justify-between">
+      <div>
+        <h2 class="text-2xl font-semibold text-navy-900">Zelf rondklikken op het demokantoor</h2>
+        <p class="mt-2 max-w-xl text-ink-600">Een inlog op <a class="underline" href={SITE.demoUrl}>demo.coportaal.nl</a> met verzonnen klanten, facturen en loondossiers. U ziet precies wat uw medewerkers straks zien.</p>
+      </div>
+      <a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Inlog demokantoor CoPortaal')}`} class="btn-primary mt-6 md:mt-0">Demo-inlog aanvragen</a>
+    </div>
+  </section>
+</Base>

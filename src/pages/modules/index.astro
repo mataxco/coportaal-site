@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import { BASIS, MODULES } from '../../data/site';
+---
+<Base
+  title="Modules — CoPortaal"
+  description="De basis van CoPortaal (klanten, workflow, taken, team, documenten, ondertekenen) en de modules KYC, Facturatie en Loon. Zet aan wat u nodig heeft."
+  pad="/modules"
+>
+  <section class="container-x py-16">
+    <p class="eyebrow">Modules</p>
+    <h1 class="mt-3 text-4xl font-bold tracking-tight text-navy-900">Begin met de basis. Zet erbij wat u nodig heeft.</h1>
+    <p class="mt-4 max-w-2xl text-ink-600">Elk abonnement begint met de basis. Daarbovenop kiest u modules, per maand aan of uit te zetten. Wilt u alles? Dan is CoPortaal ALL voordeliger dan de losse optelsom.</p>
+
+    <div class="card mt-10">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-2xl font-semibold text-navy-800">{BASIS.naam}</h2>
+        <span class="rounded-full bg-navy-50 px-3 py-1 text-sm font-semibold text-navy-700">€ {BASIS.prijs}/mnd · {BASIS.gebruikersInbegrepen} gebruikers inbegrepen</span>
+      </div>
+      <p class="mt-2 text-ink-600">{BASIS.kop}</p>
+      <ul class="mt-5 grid gap-2 sm:grid-cols-2">
+        {BASIS.punten.map(p => <li class="flex items-start gap-2 text-sm"><span class="text-teal-600">✓</span><span>{p}</span></li>)}
+      </ul>
+    </div>
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-3">
+      {MODULES.map(m => (
+        <article class="card flex flex-col">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-navy-800">{m.naam}</h2>
+            <span class="rounded-full bg-navy-50 px-2.5 py-1 text-xs font-semibold text-navy-700">+ € {m.prijs}/mnd</span>
+          </div>
+          <p class="mt-3 font-medium text-navy-700">{m.kop}</p>
+          <p class="mt-2 text-sm text-ink-600">{m.intro}</p>
+          <a href={`/modules/${m.slug}`} class="btn-secondary mt-auto pt-3">Alles over {m.naam}</a>
+        </article>
+      ))}
+    </div>
+  </section>
+</Base>

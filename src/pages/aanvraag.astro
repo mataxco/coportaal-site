@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import { MODULES, SITE } from '../data/site';
+---
+<Base
+  title="Aanvraag doen — CoPortaal"
+  description="Vraag uw eigen CoPortaal-omgeving aan. Binnen één werkdag klaar, inclusief import van uw klanten. Geen betaalgegevens nodig."
+  pad="/aanvraag"
+>
+  <section class="container-x grid gap-12 py-16 lg:grid-cols-[3fr_2fr]">
+    <div>
+      <p class="eyebrow">Aanvraag</p>
+      <h1 class="mt-3 text-4xl font-bold tracking-tight text-navy-900">Uw eigen omgeving, binnen één werkdag</h1>
+      <p class="mt-4 text-ink-600">Vul het formulier in. Wij nemen dezelfde of de volgende werkdag contact op, richten uw omgeving in en importeren uw klanten. U betaalt pas als het portaal draait.</p>
+
+      <!-- Verzending: nu via e-mailprogramma (mailto); zodra de serverfunctie er is, post dit formulier naar /api/aanvraag. -->
+      <form id="aanvraag" class="mt-8 grid gap-5" method="post" action="/api/aanvraag">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="grid gap-1 text-sm font-medium">Kantoornaam<input name="kantoor" required class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
+          <label class="grid gap-1 text-sm font-medium">KvK-nummer<input name="kvk" inputmode="numeric" class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
+          <label class="grid gap-1 text-sm font-medium">Contactpersoon<input name="naam" required class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
+          <label class="grid gap-1 text-sm font-medium">E-mailadres<input name="email" type="email" required class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
+          <label class="grid gap-1 text-sm font-medium">Telefoon<input name="telefoon" type="tel" class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
+          <label class="grid gap-1 text-sm font-medium">Aantal medewerkers<input name="gebruikers" type="number" min="1" value="3" class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
+        </div>
+        <fieldset class="grid gap-2">
+          <legend class="text-sm font-medium">Modules naast de basis</legend>
+          {MODULES.map(m => (
+            <label class="flex items-center gap-3 rounded-xl border border-navy-100 p-3 text-sm"><input type="checkbox" name="modules" value={m.slug} class="mod h-4 w-4 accent-navy-800" /> {m.naam} <span class="text-ink-400">— {m.kop}</span></label>
+          ))}
+        </fieldset>
+        <label class="grid gap-1 text-sm font-medium">Huidig boekhoudpakket<input name="pakket" placeholder="Bijv. SnelStart, Exact Online, Jortt, AFAS" class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
+        <label class="grid gap-1 text-sm font-medium">Geschat aantal klanten<input name="klanten" type="number" min="1" class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
+        <label class="grid gap-1 text-sm font-medium">Opmerkingen<textarea name="opmerking" rows="4" class="rounded-xl border border-navy-100 px-3 py-2.5"></textarea></label>
+        <label class="flex items-start gap-3 text-sm text-ink-600"><input type="checkbox" required class="mt-1 h-4 w-4 accent-navy-800" /> Ik ga akkoord met de <a href="/privacy" class="underline">privacyverklaring</a>. Mijn gegevens worden alleen gebruikt om deze aanvraag af te handelen.</label>
+        <button type="submit" class="btn-primary w-max">Aanvraag versturen</button>
+        <p id="melding" class="hidden rounded-lg bg-teal-100 px-4 py-3 text-sm text-teal-600"></p>
+      </form>
+    </div>
+    <aside class="space-y-6">
+      <div class="card">
+        <p class="eyebrow">Zo gaat het verder</p>
+        <ol class="mt-4 space-y-3 text-sm text-ink-600">
+          <li><strong class="text-navy-800">1. Kennismaken.</strong> Wij bellen kort om uw wensen en uw huidige pakket door te nemen.</li>
+          <li><strong class="text-navy-800">2. Inrichten.</strong> Uw omgeving op <span class="font-mono">uwkantoor.coportaal.nl</span>, met uw logo en gegevens.</li>
+          <li><strong class="text-navy-800">3. Importeren.</strong> Uw klanten uit een CSV- of Excel-export van uw pakket.</li>
+          <li><strong class="text-navy-800">4. Uitleg.</strong> Een uur samen door het portaal, daarna gaat u live.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <p class="eyebrow">Liever eerst praten?</p>
+        <p class="mt-3 text-sm text-ink-600">Mail naar <a class="underline" href={`mailto:${SITE.email}`}>{SITE.email}</a> of vraag een inlog op het demokantoor aan via de <a class="underline" href="/demo">demopagina</a>.</p>
+      </div>
+    </aside>
+  </section>
+
+  <script>
+    // Voorselectie uit de prijsconfigurator (?m=kyc,facturatie&g=5)
+    const p = new URLSearchParams(location.search);
+    const m = p.get('m');
+    if (m) document.querySelectorAll<HTMLInputElement>('.mod').forEach(c => { c.checked = m.split(',').includes(c.value); });
+    const g = p.get('g');
+    if (g) (document.querySelector('[name=gebruikers]') as HTMLInputElement).value = g;
+
+    // Zolang er geen serverfunctie is: open het e-mailprogramma met de aanvraag.
+    const form = document.getElementById('aanvraag') as HTMLFormElement;
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const d = new FormData(form);
+      const regels = [...d.entries()].filter(([k]) => k !== 'modules').map(([k, v]) => `${k}: ${v}`);
+      regels.push('modules: ' + d.getAll('modules').join(', '));
+      location.href = 'mailto:info@coportaal.nl?subject=' + encodeURIComponent('Aanvraag CoPortaal — ' + d.get('kantoor')) + '&body=' + encodeURIComponent(regels.join('\n'));
+      const mel = document.getElementById('melding')!;
+      mel.textContent = 'Uw e-mailprogramma opent met de aanvraag. Verstuur die mail en wij nemen contact op.';
+      mel.classList.remove('hidden');
+    });
+  </script>
+</Base>

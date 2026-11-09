@@ -1,0 +1,126 @@
+---
+import '../styles/global.css';
+import { SITE } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Pad voor canonical, bv. "/prijzen". */
+  pad?: string;
+  /** Extra JSON-LD naast Organization. */
+  schema?: Record<string, unknown>[];
+}
+const { title, description, pad = '/', schema = [] } = Astro.props;
+const canonical = new URL(pad, SITE.url).toString();
+const organisation = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE.naam,
+  url: SITE.url,
+  logo: `${SITE.url}/logo/logo-b-monogram.svg`,
+  email: SITE.email,
+  areaServed: 'NL',
+};
+const software = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: SITE.naam,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  offers: { '@type': 'Offer', price: '79', priceCurrency: 'EUR', description: 'Per kantoor per maand, modules bij te kopen' },
+  description: SITE.slogan,
+  url: SITE.url,
+};
+const nav = [
+  { href: '/modules', label: 'Modules' },
+  { href: '/prijzen', label: 'Prijzen' },
+  { href: '/demo', label: 'Demo' },
+  { href: '/over', label: 'Over' },
+];
+const huidig = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#1E2A5A" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.naam} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="nl_NL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <script type="application/ld+json" set:html={JSON.stringify(organisation)} />
+    <script type="application/ld+json" set:html={JSON.stringify(software)} />
+    {schema.map(s => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <header class="sticky top-0 z-40 border-b border-navy-100 bg-white/90 backdrop-blur">
+      <div class="container-x flex h-16 items-center justify-between gap-4">
+        <a href="/" class="flex items-center gap-2" aria-label="CoPortaal, naar de startpagina">
+          <img src="/logo/logo-b-monogram.svg" alt="" class="h-9 w-auto" width="180" height="40" />
+        </a>
+        <nav class="hidden items-center gap-1 md:flex" aria-label="Hoofdmenu">
+          {nav.map(n => (
+            <a href={n.href} class:list={['rounded-lg px-3 py-2 text-sm font-medium hover:bg-navy-50', huidig.startsWith(n.href) ? 'text-navy-800' : 'text-ink-600']}>{n.label}</a>
+          ))}
+        </nav>
+        <div class="flex items-center gap-2">
+          <a href={SITE.demoUrl} class="btn-ghost hidden sm:inline-flex" rel="noopener">Inloggen</a>
+          <a href="/aanvraag" class="btn-primary">Aanvraag doen</a>
+        </div>
+      </div>
+      <nav class="container-x flex gap-1 overflow-x-auto pb-2 md:hidden" aria-label="Hoofdmenu (mobiel)">
+        {nav.map(n => (
+          <a href={n.href} class:list={['shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium', huidig.startsWith(n.href) ? 'bg-navy-50 text-navy-800' : 'text-ink-600']}>{n.label}</a>
+        ))}
+      </nav>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="mt-20 border-t border-navy-100 bg-navy-50">
+      <div class="container-x grid gap-10 py-12 md:grid-cols-4">
+        <div class="md:col-span-2">
+          <img src="/logo/logo-b-monogram.svg" alt="CoPortaal" class="h-9 w-auto" width="180" height="40" />
+          <p class="mt-4 max-w-sm text-sm text-ink-600">
+            Gebouwd door een administratiekantoor, voor administratiekantoren. Elk kantoor krijgt een eigen, afgeschermde omgeving in Nederland of de EU.
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-ink-400">Product</p>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><a class="hover:underline" href="/modules">Modules</a></li>
+            <li><a class="hover:underline" href="/prijzen">Prijzen</a></li>
+            <li><a class="hover:underline" href="/demo">Demo</a></li>
+            <li><a class="hover:underline" href={SITE.demoUrl}>Inloggen</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-ink-400">Bedrijf</p>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><a class="hover:underline" href="/over">Over CoPortaal</a></li>
+            <li><a class="hover:underline" href="/aanvraag">Contact en aanvraag</a></li>
+            <li><a class="hover:underline" href="/privacy">Privacy en verwerkersovereenkomst</a></li>
+            <li><a class="hover:underline" href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container-x flex flex-wrap items-center justify-between gap-2 border-t border-navy-100 py-5 text-xs text-ink-400">
+        <span>© {new Date().getFullYear()} CoPortaal. Alle rechten voorbehouden.</span>
+        <span>Gegevens in de EU · AVG-proof · Maandelijks opzegbaar</span>
+      </div>
+    </footer>
+  </body>
+</html>

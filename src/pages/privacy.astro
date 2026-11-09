@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../data/site';
+---
+<Base
+  title="Privacy en verwerkersovereenkomst — CoPortaal"
+  description="Hoe CoPortaal omgaat met persoonsgegevens: eigen omgeving per kantoor in de EU, verwerkersovereenkomst, subverwerkers en bewaartermijnen."
+  pad="/privacy"
+>
+  <section class="container-x max-w-3xl py-16 prose-nl">
+    <p class="eyebrow">Privacy</p>
+    <h1 class="mt-3 text-4xl font-bold tracking-tight text-navy-900">Privacyverklaring en verwerkersovereenkomst</h1>
+    <p class="mt-6 rounded-xl border border-gold-500/40 bg-gold-100 p-4 text-sm text-navy-800">Concepttekst. Laat deze pagina vóór livegang nakijken door een jurist; de verwerkersovereenkomst en de lijst van subverwerkers horen hier als download te staan.</p>
+
+    <h2 class="mt-10 text-2xl font-semibold text-navy-900">Twee rollen</h2>
+    <p class="mt-3">Voor de gegevens die u op deze website achterlaat (bijvoorbeeld een aanvraag) is CoPortaal <strong>verwerkingsverantwoordelijke</strong>. Voor de gegevens die uw kantoor in zijn eigen CoPortaal-omgeving zet, bent u verwerkingsverantwoordelijke en is CoPortaal <strong>verwerker</strong>. Daarvoor sluiten we een verwerkersovereenkomst.</p>
+
+    <h2 class="mt-10 text-2xl font-semibold text-navy-900">Waar staan de gegevens</h2>
+    <p class="mt-3">Elk kantoor krijgt een eigen omgeving op servers in de Europese Unie. Gegevens van verschillende kantoren staan nooit in dezelfde database. Back-ups worden dagelijks gemaakt en herstel is mogelijk tot op de minuut.</p>
+
+    <h2 class="mt-10 text-2xl font-semibold text-navy-900">Subverwerkers</h2>
+    <p class="mt-3">Voor hosting en e-mail maakt CoPortaal gebruik van leveranciers die aan de AVG voldoen. De actuele lijst (onder meer database- en applicatiehosting, e-mailverzending, en betaalverwerking via Mollie als u de facturatiemodule gebruikt) is onderdeel van de verwerkersovereenkomst.</p>
+
+    <h2 class="mt-10 text-2xl font-semibold text-navy-900">Identiteitsbewijzen (KYC)</h2>
+    <p class="mt-3">Bij de KYC-module wordt het BSN automatisch afgeschermd op de foto. De originele, onbewerkte foto wordt na de controle door uw kantoor verwijderd. Herkenning van de gegevens gebeurt in de browser van de klant; de foto's worden niet naar een externe dienst gestuurd.</p>
+
+    <h2 class="mt-10 text-2xl font-semibold text-navy-900">Contact</h2>
+    <p class="mt-3">Vragen over privacy: <a class="underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+  </section>
+</Base>

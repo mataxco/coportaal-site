@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Huisstijl CoPortaal — navy als basis, één warm accent (goud) spaarzaam
+   gebruikt, teal voor "succes"/bevestiging. Alles via tokens, zodat een
+   kleurkeuze later één regel is. */
+@theme {
+  --color-navy-950: #0B1230;
+  --color-navy-900: #121B45;
+  --color-navy-800: #1E2A5A;
+  --color-navy-700: #2A3A78;
+  --color-navy-600: #2F55A4;
+  --color-navy-100: #E6EBF7;
+  --color-navy-50:  #F3F5FB;
+  --color-gold-500: #D6B249;
+  --color-gold-600: #B8952E;
+  --color-gold-100: #FBF3DA;
+  --color-teal-600: #0F6E56;
+  --color-teal-500: #1D9E75;
+  --color-teal-100: #E1F5EE;
+  --color-ink-900: #171A26;
+  --color-ink-600: #4B5163;
+  --color-ink-400: #8A90A2;
+  --font-sans: "Inter", ui-sans-serif, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { @apply bg-white text-ink-900 antialiased; }
+
+.container-x { @apply mx-auto w-full max-w-6xl px-5 sm:px-8; }
+.btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-colors; }
+.btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-colors bg-navy-800 text-white hover:bg-navy-700; }
+.btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-colors border border-navy-100 bg-white text-navy-800 hover:bg-navy-50; }
+.btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-colors text-navy-800 hover:bg-navy-50; }
+.eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-teal-600; }
+.card { @apply rounded-2xl border border-navy-100 bg-white p-6 shadow-[0_1px_2px_rgba(18,27,69,0.06),0_8px_24px_-16px_rgba(18,27,69,0.25)]; }
+.prose-nl p { @apply text-ink-600 leading-relaxed; }

@@ -13,7 +13,7 @@ import { PAKKETTEN, SITE, euro } from '../data/site';
       <h1 class="mt-3 text-4xl font-bold tracking-tight text-navy-900">Uw eigen omgeving, binnen één werkdag</h1>
       <p class="mt-4 text-ink-600">Vul het formulier in. Wij nemen dezelfde of de volgende werkdag contact op, richten uw omgeving in en importeren uw klanten. U betaalt pas als het portaal draait.</p>
 
-      <!-- Verzending: nu via e-mailprogramma (mailto); zodra de serverfunctie er is, post dit formulier naar /api/aanvraag. -->
+      <!-- Verzending: naar de aanvraag-functie van CoPortaal Beheer; valt terug op mailto. -->
       <form id="aanvraag" class="mt-8 grid gap-5" method="post" action="/api/aanvraag">
         <div class="grid gap-5 sm:grid-cols-2">
           <label class="grid gap-1 text-sm font-medium">Kantoornaam<input name="kantoor" required class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
@@ -33,6 +33,7 @@ import { PAKKETTEN, SITE, euro } from '../data/site';
         <label class="grid gap-1 text-sm font-medium">Geschat aantal klanten<input name="klanten" type="number" min="1" class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
         <label class="grid gap-1 text-sm font-medium">Opmerkingen<textarea name="opmerking" rows="4" class="rounded-xl border border-navy-100 px-3 py-2.5"></textarea></label>
         <label class="flex items-start gap-3 text-sm text-ink-600"><input type="checkbox" required class="mt-1 h-4 w-4 accent-navy-800" /> Ik ga akkoord met de <a href="/privacy" class="underline">privacyverklaring</a>. Mijn gegevens worden alleen gebruikt om deze aanvraag af te handelen.</label>
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
         <button type="submit" class="btn-primary w-max">Aanvraag versturen</button>
         <p id="melding" class="hidden rounded-lg bg-teal-100 px-4 py-3 text-sm text-teal-600"></p>
       </form>
@@ -62,16 +63,36 @@ import { PAKKETTEN, SITE, euro } from '../data/site';
     const g = p.get('g');
     if (g) (document.querySelector('[name=gebruikers]') as HTMLInputElement).value = g;
 
-    // Zolang er geen serverfunctie is: open het e-mailprogramma met de aanvraag.
+    // Verzenden naar het beheer van CoPortaal; lukt dat niet, dan via het e-mailprogramma.
+    const AANVRAAG_URL = 'https://assmaihnaojaulhtjkiq.supabase.co/functions/v1/aanvraag';
     const form = document.getElementById('aanvraag') as HTMLFormElement;
-    form.addEventListener('submit', e => {
+    const knop = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const d = new FormData(form);
-      const regels = [...d.entries()].map(([k, v]) => `${k}: ${v}`);
-      location.href = 'mailto:info@coportaal.nl?subject=' + encodeURIComponent('Aanvraag CoPortaal — ' + d.get('kantoor')) + '&body=' + encodeURIComponent(regels.join('\n'));
       const mel = document.getElementById('melding')!;
-      mel.textContent = 'Uw e-mailprogramma opent met de aanvraag. Verstuur die mail en wij nemen contact op.';
-      mel.classList.remove('hidden');
+      const body = {
+        kantoor: d.get('kantoor'), kvk: d.get('kvk'), naam: d.get('naam'), email: d.get('email'), telefoon: d.get('telefoon'),
+        gebruikers: d.get('gebruikers'), pakket: d.get('pakket_keuze'), boekhoudpakket: d.get('pakket'), klanten: d.get('klanten'),
+        opmerking: d.get('opmerking'), website: d.get('website'),
+      };
+      knop.disabled = true;
+      try {
+        const r = await fetch(AANVRAAG_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok || !j.ok) throw new Error(j.error || 'Verzenden mislukt');
+        form.reset();
+        mel.textContent = 'Dank u wel. Uw aanvraag is ontvangen; wij nemen dezelfde of de volgende werkdag contact met u op.';
+        mel.classList.remove('hidden');
+        mel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch {
+        const regels = Object.entries(body).filter(([k]) => k !== 'website').map(([k, v]) => `${k}: ${v ?? ''}`);
+        location.href = 'mailto:info@coportaal.nl?subject=' + encodeURIComponent('Aanvraag CoPortaal — ' + d.get('kantoor')) + '&body=' + encodeURIComponent(regels.join('
+'));
+        mel.textContent = 'Direct verzenden lukte niet; uw e-mailprogramma opent met de aanvraag. Verstuur die mail en wij nemen contact op.';
+        mel.classList.remove('hidden');
+      }
+      knop.disabled = false;
     });
   </script>
 </Base>

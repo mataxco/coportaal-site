@@ -21,7 +21,7 @@ const meta: Record<string, { title: string; description: string }> = {
         <p class="mt-3 text-xl font-medium text-navy-700">{m.kop}</p>
         <p class="mt-4 text-ink-600">{m.intro}</p>
         <div class="mt-6 flex flex-wrap gap-3">
-          <a href="/prijzen" class="btn-primary">Samenstellen vanaf + € {m.prijs}/mnd</a>
+          <a href={`/prijzen?p=${m.slug === 'kyc' ? 'all' : 'compleet'}`} class="btn-primary">Inbegrepen in {m.inbegrepenIn} · bekijk prijzen</a>
           <a href="/demo" class="btn-secondary">Bekijk de demo</a>
         </div>
       </div>

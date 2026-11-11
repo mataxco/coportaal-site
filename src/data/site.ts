@@ -1,6 +1,6 @@
 /**
  * Alle inhoud die op meer dan één plek voorkomt: modules, prijzen, bedrijfsgegevens.
- * Prijzen zijn VOORBEELDWAARDEN tot Mustafa ze heeft vastgesteld.
+ * Prijzen vastgesteld 11-11-2026: twee pakketten, exclusief btw, per maand.
  */
 export const SITE = {
   naam: 'CoPortaal',
@@ -20,16 +20,15 @@ export interface ModuleInfo {
   intro: string;          // alinea
   punten: string[];       // wat zit erin
   probleem: string;       // welk probleem lost het op
-  prijs: number;          // per maand, voorbeeld
+  inbegrepenIn: string;   // in welk pakket de module zit
   video?: string;         // YouTube/Vimeo-URL, later
 }
 
+export const PRIJS_EXTRA_GEBRUIKER = 12.5;
+
 export const BASIS = {
-  naam: 'CoPortaal Basis',
+  naam: 'De basis',
   kop: 'Alles wat een kantoor dagelijks nodig heeft, op één plek.',
-  prijs: 79,
-  gebruikersInbegrepen: 3,
-  prijsPerExtraGebruiker: 12,
   punten: [
     'Klantenbeheer met automatische KvK- en btw-nummercontrole',
     'Workflow per klant: IB, VPB, jaarrekening en btw-aangiften in één overzicht',
@@ -56,7 +55,7 @@ export const MODULES: ModuleInfo[] = [
       'Overzicht van alles wat nog bij klanten ligt',
     ],
     probleem: 'Kopieën van paspoorten in mappen en mailboxen, geen vast moment van hercontrole en geen bewijs als de toezichthouder langskomt.',
-    prijs: 29,
+    inbegrepenIn: 'CoPortaal ALL',
   },
   {
     slug: 'facturatie',
@@ -72,7 +71,7 @@ export const MODULES: ModuleInfo[] = [
       'Dubieuze debiteuren: waarschuwing, werk opschorten, overdracht aan incassobureau',
     ],
     probleem: 'Openstaande posten die niemand bijhoudt, en uren per maand aan handmatig factureren en nabellen.',
-    prijs: 49,
+    inbegrepenIn: 'Compleet en ALL',
   },
   {
     slug: 'loon',
@@ -88,9 +87,43 @@ export const MODULES: ModuleInfo[] = [
       'Loonstukken per e-mail naar de werkgever',
     ],
     probleem: 'Excel-lijstjes per maand en zoeken in mailboxen naar wie nog een verklaring moet tekenen.',
-    prijs: 59,
+    inbegrepenIn: 'Compleet en ALL',
   },
 ];
 
-export const ALL = { naam: 'CoPortaal ALL', prijs: 189, omschrijving: 'Basis en alle modules, één vaste prijs.' };
+export type PakketSlug = 'compleet' | 'all';
+export interface Pakket {
+  slug: PakketSlug;
+  naam: string;
+  prijs: number;              // per maand, excl. btw
+  gebruikersInbegrepen: number;
+  kop: string;
+  modules: ModuleSlug[];
+  aanbevolen?: boolean;
+}
+
+export const PAKKETTEN: Pakket[] = [
+  {
+    slug: 'compleet',
+    naam: 'CoPortaal Compleet',
+    prijs: 150,
+    gebruikersInbegrepen: 3,
+    kop: 'De basis plus Facturatie en Loon. Alles om uw kantoor te runnen.',
+    modules: ['facturatie', 'loon'],
+  },
+  {
+    slug: 'all',
+    naam: 'CoPortaal ALL',
+    prijs: 199.95,
+    gebruikersInbegrepen: 5,
+    kop: 'Compleet plus KYC: Wwft-identificatie die uw klant zelf afrondt. Met 5 gebruikers.',
+    modules: ['kyc', 'facturatie', 'loon'],
+    aanbevolen: true,
+  },
+];
+
+export const VANAF = PAKKETTEN[0].prijs;
+
+/** € 199,95 → "199,95", € 150 → "150" */
+export const euro = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 export const INRICHTING = { prijs: 495, omschrijving: 'Eenmalig: uw omgeving inrichten, klanten importeren en een uur uitleg.' };

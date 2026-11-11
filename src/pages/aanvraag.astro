@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { MODULES, SITE } from '../data/site';
+import { PAKKETTEN, SITE, euro } from '../data/site';
 ---
 <Base
   title="Aanvraag doen — CoPortaal"
@@ -24,9 +24,9 @@ import { MODULES, SITE } from '../data/site';
           <label class="grid gap-1 text-sm font-medium">Aantal medewerkers<input name="gebruikers" type="number" min="1" value="3" class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
         </div>
         <fieldset class="grid gap-2">
-          <legend class="text-sm font-medium">Modules naast de basis</legend>
-          {MODULES.map(m => (
-            <label class="flex items-center gap-3 rounded-xl border border-navy-100 p-3 text-sm"><input type="checkbox" name="modules" value={m.slug} class="mod h-4 w-4 accent-navy-800" /> {m.naam} <span class="text-ink-400">— {m.kop}</span></label>
+          <legend class="text-sm font-medium">Pakket</legend>
+          {PAKKETTEN.map(p => (
+            <label class="flex items-center gap-3 rounded-xl border border-navy-100 p-3 text-sm has-[:checked]:border-navy-600 has-[:checked]:bg-navy-50/60"><input type="radio" name="pakket_keuze" value={p.slug} checked={p.aanbevolen} class="pak h-4 w-4 accent-navy-800" /> {p.naam} <span class="text-ink-400">— € {euro(p.prijs)} /mnd, {p.gebruikersInbegrepen} gebruikers</span></label>
           ))}
         </fieldset>
         <label class="grid gap-1 text-sm font-medium">Huidig boekhoudpakket<input name="pakket" placeholder="Bijv. SnelStart, Exact Online, Jortt, AFAS" class="rounded-xl border border-navy-100 px-3 py-2.5" /></label>
@@ -55,10 +55,10 @@ import { MODULES, SITE } from '../data/site';
   </section>
 
   <script>
-    // Voorselectie uit de prijsconfigurator (?m=kyc,facturatie&g=5)
+    // Voorselectie uit de prijzenpagina (?p=all&g=5)
     const p = new URLSearchParams(location.search);
-    const m = p.get('m');
-    if (m) document.querySelectorAll<HTMLInputElement>('.mod').forEach(c => { c.checked = m.split(',').includes(c.value); });
+    const pk = p.get('p');
+    if (pk) document.querySelectorAll<HTMLInputElement>('.pak').forEach(r => { r.checked = r.value === pk; });
     const g = p.get('g');
     if (g) (document.querySelector('[name=gebruikers]') as HTMLInputElement).value = g;
 
@@ -67,8 +67,7 @@ import { MODULES, SITE } from '../data/site';
     form.addEventListener('submit', e => {
       e.preventDefault();
       const d = new FormData(form);
-      const regels = [...d.entries()].filter(([k]) => k !== 'modules').map(([k, v]) => `${k}: ${v}`);
-      regels.push('modules: ' + d.getAll('modules').join(', '));
+      const regels = [...d.entries()].map(([k, v]) => `${k}: ${v}`);
       location.href = 'mailto:info@coportaal.nl?subject=' + encodeURIComponent('Aanvraag CoPortaal — ' + d.get('kantoor')) + '&body=' + encodeURIComponent(regels.join('\n'));
       const mel = document.getElementById('melding')!;
       mel.textContent = 'Uw e-mailprogramma opent met de aanvraag. Verstuur die mail en wij nemen contact op.';

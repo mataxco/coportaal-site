@@ -87,8 +87,7 @@ import { PAKKETTEN, SITE, euro } from '../data/site';
         mel.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } catch {
         const regels = Object.entries(body).filter(([k]) => k !== 'website').map(([k, v]) => `${k}: ${v ?? ''}`);
-        location.href = 'mailto:info@coportaal.nl?subject=' + encodeURIComponent('Aanvraag CoPortaal — ' + d.get('kantoor')) + '&body=' + encodeURIComponent(regels.join('
-'));
+        location.href = 'mailto:info@coportaal.nl?subject=' + encodeURIComponent('Aanvraag CoPortaal — ' + d.get('kantoor')) + '&body=' + encodeURIComponent(regels.join(String.fromCharCode(10)));
         mel.textContent = 'Direct verzenden lukte niet; uw e-mailprogramma opent met de aanvraag. Verstuur die mail en wij nemen contact op.';
         mel.classList.remove('hidden');
       }

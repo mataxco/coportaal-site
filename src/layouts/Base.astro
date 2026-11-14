@@ -65,9 +65,9 @@ const huidig = Astro.url.pathname.replace(/\/$/, '') || '/';
   </head>
   <body class="flex min-h-screen flex-col">
     <header class="sticky top-0 z-40 border-b border-navy-100 bg-white/90 backdrop-blur">
-      <div class="container-x flex h-16 items-center justify-between gap-4">
+      <div class="container-x flex h-[72px] items-center justify-between gap-4">
         <a href="/" class="flex items-center gap-2" aria-label="CoPortaal, naar de startpagina">
-          <img src="/logo/logo-c-verbinding.svg" alt="" class="h-9 w-auto" width="180" height="40" />
+          <img src="/logo/logo-coportaal.svg" alt="" class="h-11 w-auto sm:h-12" width="190" height="48" />
         </a>
         <nav class="hidden items-center gap-1 md:flex" aria-label="Hoofdmenu">
           {nav.map(n => (
@@ -93,7 +93,8 @@ const huidig = Astro.url.pathname.replace(/\/$/, '') || '/';
     <footer class="mt-20 border-t border-navy-100 bg-navy-50">
       <div class="container-x grid gap-10 py-12 md:grid-cols-4">
         <div class="md:col-span-2">
-          <img src="/logo/logo-c-verbinding.svg" alt="CoPortaal" class="h-9 w-auto" width="180" height="40" />
+          <img src="/logo/logo-coportaal.svg" alt="CoPortaal" class="h-14 w-auto" width="221" height="56" />
+          <p class="mt-3 text-xl font-semibold tracking-tight text-navy-800">Samen grip op elk dossier.</p>
           <p class="mt-4 max-w-sm text-sm text-ink-600">
             Gebouwd door een administratiekantoor, voor administratiekantoren. Elk kantoor krijgt een eigen, afgeschermde omgeving in Nederland of de EU.
           </p>
